@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Jona Hallbaur</title>
+  <meta name="description" content="Jona Hallbaur – software engineer and Master of Artificial Intelligence student at Chang Gung University, Taiwan." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700&family=Fragment+Mono&family=Noto+Sans+TC:wght@500;900&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Anton', '"Noto Sans TC"', 'Impact', 'sans-serif'],
+            sans: ['Manrope', 'system-ui', 'sans-serif'],
+            mono: ['"Fragment Mono"', 'ui-monospace', 'monospace'],
+            tc: ['"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            bone: '#e9e8e3',
+            ink: '#0c0c0e',
+            dim: '#6b6a66',
+            volt: '#3d2bff',
+            lilac: '#a49bff',
+          },
+          maxWidth: { page: '1120px' },
+        },
+      },
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
+  <style>
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    body { background: #e9e8e3; color: #0c0c0e; }
+    h1, h2, h3 { text-wrap: balance; }
+    .label { font-family: 'Fragment Mono', monospace; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; }
+    .tnum { font-variant-numeric: tabular-nums; }
+    .line { overflow: hidden; display: block; }
+    .line > span { display: inline-block; }
+    .wrap { max-width: 1120px; margin-inline: auto; padding-inline: 1.25rem; }
+    @media (min-width: 640px) { .wrap { padding-inline: 2.5rem; } }
+
+    /* Cursor */
+    #cursor { position: fixed; top: 0; left: 0; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%;
+      background: #fff; mix-blend-mode: difference; pointer-events: none; z-index: 100; transition: width .25s, height .25s, margin .25s; }
+    #cursor.big { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+    @media (hover: none) { #cursor { display: none; } }
+
+    /* Work hover image */
+    #peek { position: fixed; top: 0; left: 0; width: 280px; aspect-ratio: 4/3; pointer-events: none; z-index: 40; background: #fff;
+      opacity: 0; transform: translate(-50%, -50%) scale(.85); transition: opacity .25s, transform .25s; overflow: hidden; border-radius: 6px; }
+    #peek.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    #peek img { width: 100%; height: 100%; object-fit: cover; }
+    #peek.logo img { object-fit: contain; padding: 2.5rem; }
+    @media (hover: none) { #peek { display: none; } }
+
+    /* Timeline */
+    .tl-dot { box-shadow: 0 0 0 6px #0c0c0e; }
+
+    .marquee { animation: marq 28s linear infinite; }
+    @keyframes marq { to { transform: translateX(-50%); } }
+
+    a:focus-visible { outline: 2px solid #3d2bff; outline-offset: 4px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .marquee { animation: none; }
+      #loader { display: none !important; }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden">
+
+  <div id="cursor" aria-hidden="true"></div>
+  <div id="peek" aria-hidden="true"><img id="peek-img" src="assets/netze-logo.svg" alt="" /></div>
+
+  <!-- Loader -->
+  <div id="loader" class="fixed inset-0 z-[90] bg-ink text-bone flex items-end justify-between p-6 sm:p-10">
+    <span class="label opacity-60">Karlsruhe → Taoyuan</span>
+    <span id="loader-num" class="font-display text-[22vw] sm:text-[14vw] leading-none tnum">0</span>
+  </div>
+
+  <!-- Nav -->
+  <header class="fixed top-0 inset-x-0 z-50 mix-blend-difference text-white">
+    <div class="wrap flex justify-between items-center py-5 label">
+      <a href="#top" data-hover>J.H.</a>
+      <nav class="flex gap-5 sm:gap-8">
+        <a href="#about" data-hover>About</a>
+        <a href="#journey" data-hover>Journey</a>
+        <a href="#work" data-hover class="hidden sm:inline">Work</a>
+        <a href="#research" data-hover>Research</a>
+        <a href="#contact" data-hover>Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="wrap pt-28 sm:pt-32">
+      <div class="flex flex-wrap justify-between gap-4 label text-dim">
+        <span class="hero-meta"><span class="font-tc">韓卓楠</span> · Software engineer</span>
+        <span class="hero-meta">Master of AI · Chang Gung University</span>
+        <span class="hero-meta">Taoyuan <span class="font-tc">桃園</span> · <span id="clock" class="tnum">--:--</span></span>
+      </div>
+
+      <h1 class="font-display uppercase leading-[0.84] tracking-tight mt-6 text-[min(19vw,14rem)]">
+        <span class="line"><span class="hero-word">Jona</span></span>
+        <span class="line text-right"><span class="hero-word">Hallbaur</span></span>
+      </h1>
+
+      <div class="grid md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-16 mt-12 items-end">
+        <div class="flex flex-col justify-between gap-10 h-full">
+          <p class="hero-meta text-xl sm:text-2xl leading-snug max-w-md">
+            I build software with AI in it. Three years at one of Germany's largest energy companies, one coffee brand, and now a Master's in Taiwan.
+          </p>
+          <p class="hero-meta label text-dim">Scroll ↓</p>
+        </div>
+        <figure id="photo-wrap" class="hero-photo">
+          <div class="overflow-hidden rounded-md">
+            <img src="assets/jona-working.jpg" alt="Jona Hallbaur working on a laptop" class="w-full aspect-[5/4] object-cover" />
+          </div>
+          <figcaption class="label text-dim mt-3 flex justify-between"><span>At work</span><span>July 2026</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="wrap py-28 sm:py-36 scroll-mt-16">
+      <p class="label text-dim mb-8">(About)</p>
+      <p id="statement" class="font-semibold text-3xl sm:text-4xl lg:text-[2.9rem] leading-[1.18] tracking-tight max-w-[30ch]">
+        I'm Jona, a software engineer from Germany. For three years I studied and worked at the same time, building real products at one of Germany's largest energy companies. I also started my own coffee brand. Now I'm in Taiwan to go deep into AI, especially language model agents and AI for healthcare.
+      </p>
+
+      <dl class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-ink">
+        <div class="py-6 sm:pr-6 border-b border-ink/15 lg:border-b-0">
+          <dt class="label text-dim">Name (English)</dt>
+          <dd class="mt-2 text-xl font-semibold">Jona Maximilian Hallbaur</dd>
+        </div>
+        <div class="py-6 sm:pl-6 lg:pr-6 border-b border-ink/15 lg:border-b-0 sm:border-l">
+          <dt class="label text-dim">Name (中文)</dt>
+          <dd class="mt-2 text-xl font-semibold font-tc">韓卓楠 <span class="text-dim font-sans font-normal text-base">(Hán Zhuónán)</span></dd>
+        </div>
+        <div class="py-6 sm:pr-6 lg:pl-6 border-b sm:border-b-0 border-ink/15 lg:border-l">
+          <dt class="label text-dim">Student ID</dt>
+          <dd class="mt-2 text-xl font-semibold tnum">M1561020</dd>
+        </div>
+        <div class="py-6 sm:pl-6 sm:border-l border-ink/15">
+          <dt class="label text-dim">Program</dt>
+          <dd class="mt-2 text-xl font-semibold">Master of Artificial Intelligence, Chang Gung University</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Numbers -->
+    <section class="wrap pb-28 sm:pb-36">
+      <div class="grid grid-cols-2 lg:grid-cols-4 border-t border-ink">
+        <div class="py-8 pr-4 border-b lg:border-b-0 border-ink/15">
+          <p class="font-display text-7xl tnum"><span class="count" data-to="3">3</span></p>
+          <p class="label text-dim mt-2">Years as a cooperative student at EnBW</p>
+        </div>
+        <div class="py-8 pl-4 lg:pr-4 border-l border-b lg:border-b-0 border-ink/15">
+          <p class="font-display text-7xl tnum"><span class="count" data-to="4">4</span></p>
+          <p class="label text-dim mt-2">Teams I worked in</p>
+        </div>
+        <div class="py-8 pr-4 lg:pl-4 lg:border-l border-ink/15">
+          <p class="font-display text-7xl tnum"><span class="count" data-to="9">9</span></p>
+          <p class="label text-dim mt-2">Languages my web shop runs in</p>
+        </div>
+        <div class="py-8 pl-4 border-l border-ink/15">
+          <p class="font-display text-7xl tnum"><span class="count" data-to="2.0" data-dec="1">2.0</span></p>
+          <p class="label text-dim mt-2">Bachelor GPA (German scale, 1.0 is best)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOURNEY: vertical timeline -->
+    <section id="journey" class="bg-ink text-bone py-24 sm:py-32">
+      <div class="wrap">
+        <div class="flex items-end justify-between gap-6 flex-wrap">
+          <div>
+            <p class="label text-lilac mb-4">Education &amp; experience</p>
+            <h2 class="font-display uppercase text-6xl sm:text-8xl leading-none">The journey</h2>
+          </div>
+          <p class="label opacity-60">2020 → now · 7 stops · 9,451 km</p>
+        </div>
+
+        <ol class="relative mt-16 sm:mt-20">
+          <div class="absolute left-[7px] md:left-[151px] top-2 bottom-2 w-px bg-bone/20" aria-hidden="true"></div>
+          <div id="tl-fill" class="absolute left-[7px] md:left-[151px] top-2 w-px bg-lilac origin-top h-[calc(100%-1rem)] scale-y-0" aria-hidden="true"></div>
+
+          <!-- stop -->
+          <li class="stop relative grid md:grid-cols-[152px_1fr_1fr] gap-x-10 gap-y-4 pl-10 md:pl-0 pb-20">
+            <span class="tl-dot absolute left-0 md:left-[144px] top-2 w-[15px] h-[15px] rounded-full bg-bone"></span>
+            <p class="font-display text-3xl md:text-4xl leading-none tnum md:pr-10">2020</p>
+            <div class="md:pl-10">
+              <p class="label opacity-60">01 · Walldürn, DE</p>
+              <h3 class="font-display uppercase text-4xl sm:text-5xl mt-2 leading-none">School</h3>
+              <p class="mt-4 opacity-75 leading-relaxed max-w-[42ch]">Abitur at the Frankenlandschule Walldürn, economics profile. Graduated in 2023 with a GPA of 2.0.</p>
+            </div>
+            <div class="img-box overflow-hidden rounded-md aspect-[4/3]"><img src="assets/walldurn.jpg" alt="Basilica of St. George in Walldürn" class="w-full h-full object-cover" /></div>
+          </li>
+
+          <li class="stop relative grid md:grid-cols-[152px_1fr_1fr] gap-x-10 gap-y-4 pl-10 md:pl-0 pb-20">
+            <span class="tl-dot absolute left-0 md:left-[144px] top-2 w-[15px] h-[15px] rounded-full bg-bone"></span>
+            <p class="font-display text-3xl md:text-4xl leading-none tnum md:pr-10">2023</p>
+            <div class="md:pl-10">
+              <p class="label opacity-60">02 · Karlsruhe, DE</p>
+              <h3 class="font-display uppercase text-4xl sm:text-5xl mt-2 leading-none">DHBW + EnBW</h3>
+              <p class="mt-4 opacity-75 leading-relaxed max-w-[42ch]">B.Sc. Business Informatics – Software Engineering at the Cooperative State University. Every three months I switched between lectures and EnBW. First assignment: automating processes and reporting at Erdgas Südwest.</p>
+            </div>
+            <div class="img-box overflow-hidden rounded-md aspect-[4/3]"><img src="assets/dhbw.jpg" alt="DHBW Karlsruhe building" class="w-full h-full object-cover" /></div>
+          </li>
+
+          <li class="stop relative grid md:grid-cols-[152px_1fr_1fr] gap-x-10 gap-y-4 pl-10 md:pl-0 pb-20">
+            <span class="tl-dot absolute left-0 md:left-[144px] top-2 w-[15px] h-[15px] rounded-full bg-bone"></span>
+            <p class="font-display text-3xl md:text-4xl leading-none tnum md:pr-10">2024</p>
+            <div class="md:pl-10">
+              <p class="label opacity-60">03 · Karlsruhe, DE</p>
+              <h3 class="font-display uppercase text-4xl sm:text-5xl mt-2 leading-none">EnBW</h3>
+              <p class="mt-4 opacity-75 leading-relaxed max-w-[42ch]">A prototype iOS app for construction sites with GNSS positioning at the Center of Excellence Mobile, and the charging interface for EnBW's e-mobility platform.</p>
+            </div>
+            <div class="img-box overflow-hidden rounded-md aspect-[4/3]"><img src="assets/enbw-hq-karlsruhe.jpg" alt="EnBW headquarters in Karlsruhe" class="w-full h-full object-cover" /></div>
+          </li>
+
+          <li class="stop relative grid md:grid-cols-[152px_1fr_1fr] gap-x-10 gap-y-4 pl-10 md:pl-0 pb-20">
+            <span class="tl-dot absolute left-0 md:left-[144px] top-2 w-[15px] h-[15px] rounded-full bg-bone"></span>
+            <p class="font-display text-3xl md:text-4xl leading-none tnum md:pr-10">2025</p>
+            <div class="md:pl-10">
+              <p class="label opacity-60">04 · Hà Nội, VN</p>
+              <h3 class="font-display uppercase text-4xl sm:text-5xl mt-2 leading-none">British University Vietnam</h3>
+              <p class="mt-4 opacity-75 leading-relaxed max-w-[42ch]">Four-month exchange semester in Data Science &amp; Artificial Intelligence. Coffee was part of every single day, and I didn't want to give that up.</p>
+            </div>
+            <div class="img-box overflow-hidden rounded-md aspect-[4/3]"><img src="assets/buv-campus.jpg" alt="Campus of the British University Vietnam" class="w-full h-full object-cover" /></div>
+          </li>
+
+          <li class="stop relative grid md:grid-cols-[152px_1fr_1fr] gap-x-10 gap-y-4 pl-10 md:pl-0 pb-20">
+            <span class="tl-dot absolute left-0 md:left-[144px] top-2 w-[15px] h-[15px] rounded-full bg-bone"></span>
+            <p class="font-display text-3xl md:text-4xl leading-none tnum md:pr-10">Oct 2025</p>
+            <div class="md:pl-10">
+              <p class="label opacity-60">05 · Netze BW, DE</p>
+              <h3 class="font-display uppercase text-4xl sm:text-5xl mt-2 leading-none">My first AI product</h3>
+              <p class="mt-4 opacity-75 leading-relaxed max-w-[42ch]">In Enterprise Architecture I built a multi-agent, retrieval-augmented chatbot on Azure AI Foundry that answers architects' questions from internal documentation.</p>
+            </div>
+            <div class="img-box overflow-hidden rounded-md aspect-[4/3] bg-white flex items-center justify-center p-10"><img src="assets/netze-logo.svg" alt="Netze BW logo" class="w-full max-w-[18rem] h-auto" /></div>
+          </li>
+
+          <li class="stop relative grid md:grid-cols-[152px_1fr_1fr] gap-x-10 gap-y-4 pl-10 md:pl-0 pb-20">
+            <span class="tl-dot absolute left-0 md:left-[144px] top-2 w-[15px] h-[15px] rounded-full bg-bone"></span>
+            <p class="font-display text-3xl md:text-4xl leading-none tnum md:pr-10">Dec 2025</p>
+            <div class="md:pl-10">
+              <p class="label opacity-60">06 · Germany</p>
+              <h3 class="font-display uppercase text-4xl sm:text-5xl mt-2 leading-none">VietCoff opens</h3>
+              <p class="mt-4 opacity-75 leading-relaxed max-w-[42ch]">Launch of my own coffee brand, with a web shop I designed and built myself. More about it below.</p>
+            </div>
+            <div class="img-box overflow-hidden rounded-md aspect-[4/3]"><img src="assets/vietcoff.jpg" alt="VietCoff coffee bags on a shelf" class="w-full h-full object-cover" /></div>
+          </li>
+
+          <li class="stop relative grid md:grid-cols-[152px_1fr_1fr] gap-x-10 gap-y-4 pl-10 md:pl-0">
+            <span class="tl-dot absolute left-0 md:left-[144px] top-2 w-[15px] h-[15px] rounded-full bg-lilac"></span>
+            <p class="font-display text-3xl md:text-4xl leading-none tnum md:pr-10 text-lilac">Sep 2026</p>
+            <div class="md:pl-10">
+              <p class="label text-lilac">07 · Taoyuan <span class="font-tc">桃園</span>, TW · Now</p>
+              <h3 class="font-display uppercase text-4xl sm:text-5xl mt-2 leading-none">Chang Gung University</h3>
+              <p class="mt-4 opacity-75 leading-relaxed max-w-[42ch]">Bachelor finished with a 2.0. Now I'm doing my Master of Artificial Intelligence in Taiwan, and learning Traditional Chinese on the side.</p>
+            </div>
+            <div class="img-box overflow-hidden rounded-md aspect-[4/3]"><img src="assets/cgu-building.jpg" alt="Chang Gung University engineering building" class="w-full h-full object-cover" /></div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section id="work" class="wrap py-28 sm:py-36">
+      <div class="flex items-end justify-between gap-6 flex-wrap">
+        <div>
+          <p class="label text-volt mb-4">Experience in detail</p>
+          <h2 class="font-display uppercase text-6xl sm:text-8xl leading-none">Work</h2>
+        </div>
+        <p class="label text-dim">Cooperative student · EnBW group · 2023 – 2026</p>
+      </div>
+
+      <div class="mt-14 border-t border-ink">
+        <div class="work-row group grid md:grid-cols-[1fr_1.3fr_auto] gap-2 md:gap-10 items-baseline py-8 border-b border-ink/20" data-img="assets/netze-logo.svg" data-logo data-hover>
+          <h3 class="font-display uppercase text-4xl sm:text-5xl leading-none transition-transform duration-500 group-hover:translate-x-3 group-hover:text-volt">Netze BW</h3>
+          <p class="text-dim leading-relaxed max-w-[48ch]">Enterprise Architecture. A multi-agent, retrieval-augmented chatbot on Azure AI Foundry that answers architects' questions from internal documentation.</p>
+          <span class="label text-dim tnum">Oct 2025 – 2026</span>
+        </div>
+        <div class="work-row group grid md:grid-cols-[1fr_1.3fr_auto] gap-2 md:gap-10 items-baseline py-8 border-b border-ink/20" data-img="assets/enbw-hq-karlsruhe.jpg" data-hover>
+          <h3 class="font-display uppercase text-4xl sm:text-5xl leading-none transition-transform duration-500 group-hover:translate-x-3 group-hover:text-volt">CoE Mobile</h3>
+          <p class="text-dim leading-relaxed max-w-[48ch]">EnBW Center of Excellence Mobile. A prototype iOS app in Swift for coordinating construction sites, with GNSS positioning.</p>
+          <span class="label text-dim tnum">Jun 2024 – Aug 2025</span>
+        </div>
+        <div class="work-row group grid md:grid-cols-[1fr_1.3fr_auto] gap-2 md:gap-10 items-baseline py-8 border-b border-ink/20" data-img="assets/enbw-hq-karlsruhe.jpg" data-hover>
+          <h3 class="font-display uppercase text-4xl sm:text-5xl leading-none transition-transform duration-500 group-hover:translate-x-3 group-hover:text-volt">eMobility</h3>
+          <p class="text-dim leading-relaxed max-w-[48ch]">EnBW eMobility Core Platforms. Built and optimized the charging interface for electric vehicles in an agile team, with Angular and Azure DevOps.</p>
+          <span class="label text-dim tnum">Nov 2024 – Jan 2025</span>
+        </div>
+        <div class="work-row group grid md:grid-cols-[1fr_1.3fr_auto] gap-2 md:gap-10 items-baseline py-8 border-b border-ink/20" data-img="assets/erdgas-logo.svg" data-logo data-hover>
+          <h3 class="font-display uppercase text-4xl sm:text-5xl leading-none transition-transform duration-500 group-hover:translate-x-3 group-hover:text-volt">Erdgas Südwest</h3>
+          <p class="text-dim leading-relaxed max-w-[48ch]">Automated business processes and reporting with Power Automate and Power BI.</p>
+          <span class="label text-dim tnum">Dec 2023 – Mar 2024</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIETCOFF -->
+    <section id="vietcoff" class="bg-volt text-white overflow-hidden">
+      <div class="py-8 border-b border-white/20 overflow-hidden">
+        <div class="marquee flex w-max font-display uppercase text-[14vw] sm:text-[8vw] leading-none whitespace-nowrap">
+          <span class="pr-12">VietCoff ☕ Cà phê sữa đá ☕ VietCoff ☕ Cà phê sữa đá ☕&nbsp;</span>
+          <span class="pr-12" aria-hidden="true">VietCoff ☕ Cà phê sữa đá ☕ VietCoff ☕ Cà phê sữa đá ☕&nbsp;</span>
+        </div>
+      </div>
+
+      <div class="wrap py-20 sm:py-28 grid lg:grid-cols-2 gap-14">
+        <div>
+          <p class="label opacity-70">Side project · Founder · Since Dec 2025</p>
+          <h2 class="font-display uppercase text-5xl sm:text-6xl leading-[0.95] mt-4">I missed the coffee from Hanoi. So I imported it.</h2>
+          <p class="mt-8 text-lg leading-relaxed opacity-90 max-w-[52ch]">
+            VietCoff sells Vietnamese coffee for the traditional phin filter: bold Robusta, smooth Arabica and a house blend,
+            sourced directly from Helena Coffee in Đắk Lắk, the heart of Vietnam's coffee region. I run everything myself:
+            sourcing, branding, logistics, marketing and the software.
+          </p>
+          <div class="mt-10 grid grid-cols-3 gap-6 max-w-md">
+            <div><p class="font-display text-5xl">9</p><p class="label opacity-70 mt-1">Languages</p></div>
+            <div><p class="font-display text-5xl">3</p><p class="label opacity-70 mt-1">Roasts</p></div>
+            <div><p class="font-display text-5xl">9</p><p class="label opacity-70 mt-1">Guides &amp; articles</p></div>
+          </div>
+          <a href="https://vietcoff.com" target="_blank" rel="noopener" data-hover class="mt-12 inline-flex items-center gap-3 bg-white text-volt rounded-full px-7 py-4 font-semibold hover:bg-ink hover:text-white transition-colors">
+            Visit vietcoff.com ↗
+          </a>
+        </div>
+
+        <div>
+          <p class="label opacity-70">How the shop is built</p>
+          <div class="mt-6 grid grid-cols-2 gap-px bg-white/25 rounded-md overflow-hidden">
+            <div class="bg-volt p-5"><p class="font-semibold">Next.js 16 + React 19</p><p class="text-sm opacity-80 mt-1">Headless frontend, server rendering</p></div>
+            <div class="bg-volt p-5"><p class="font-semibold">Tailwind CSS 4</p><p class="text-sm opacity-80 mt-1">Design system &amp; styling</p></div>
+            <div class="bg-volt p-5"><p class="font-semibold">WooCommerce Store API</p><p class="text-sm opacity-80 mt-1">Products, cart and checkout</p></div>
+            <div class="bg-volt p-5"><p class="font-semibold">next-intl</p><p class="text-sm opacity-80 mt-1">9 languages incl. Vietnamese</p></div>
+            <div class="bg-volt p-5"><p class="font-semibold">Amazon MCF</p><p class="text-sm opacity-80 mt-1">Fulfillment for shop orders</p></div>
+            <div class="bg-volt p-5"><p class="font-semibold">Stripe</p><p class="text-sm opacity-80 mt-1">Payments</p></div>
+            <div class="bg-volt p-5"><p class="font-semibold">SEO &amp; JSON-LD</p><p class="text-sm opacity-80 mt-1">Product, recipe &amp; FAQ rich results</p></div>
+            <div class="bg-volt p-5"><p class="font-semibold">GA4 + Consent Mode v2</p><p class="text-sm opacity-80 mt-1">Privacy-friendly analytics</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH & PROJECTS -->
+    <section id="research" class="wrap py-28 sm:py-36 scroll-mt-16">
+      <div class="flex items-end justify-between gap-6 flex-wrap">
+        <h2 class="font-display uppercase text-6xl sm:text-8xl leading-none">Research<br />&amp; projects</h2>
+        <p class="label text-dim">What I've investigated and built</p>
+      </div>
+
+      <!-- Research project: bachelor thesis -->
+      <article class="interest mt-14 border-t-2 border-ink pt-8 grid lg:grid-cols-[1fr_1.2fr] gap-10">
+        <div>
+          <p class="label text-volt">Research project · Bachelor thesis · DHBW Karlsruhe · 2026</p>
+          <h3 class="font-display uppercase text-4xl sm:text-5xl leading-none mt-4">Implementing and measuring a multi-agent system with RAG and MCP for enterprise architects</h3>
+          <p class="mt-5 text-dim leading-relaxed max-w-[48ch]">Enterprise architects at Netze BW spend a lot of time searching scattered internal documentation. In my bachelor thesis I designed and built a multi-agent system that answers their questions from this knowledge, and defined how to measure whether its answers can be trusted.</p>
+        </div>
+        <dl class="grid gap-0 self-start">
+          <div class="grid grid-cols-[130px_1fr] gap-4 py-4 border-b border-ink/15"><dt class="label text-dim pt-1">Question</dt><dd class="leading-relaxed">Can a multi-agent system that combines retrieval-augmented generation (RAG) and the Model Context Protocol (MCP) give enterprise architects reliable answers from internal architecture knowledge, and how can that quality be measured?</dd></div>
+          <div class="grid grid-cols-[130px_1fr] gap-4 py-4 border-b border-ink/15"><dt class="label text-dim pt-1">Method</dt><dd class="leading-relaxed">Implementation of a multi-agent system on Azure AI Foundry: specialised agents retrieve relevant documents via RAG and access tools and data sources through MCP. The system was then evaluated against defined quality criteria for its answers.</dd></div>
+          <div class="grid grid-cols-[130px_1fr] gap-4 py-4 border-b border-ink/15"><dt class="label text-dim pt-1">Result</dt><dd class="leading-relaxed">A working prototype for Netze BW, plus a measurement approach for evaluating answer quality of agent-based RAG systems in an enterprise setting.</dd></div>
+          <div class="grid grid-cols-[130px_1fr] gap-4 py-4 border-b border-ink/15"><dt class="label text-dim pt-1">Grade</dt><dd class="leading-relaxed">Bachelor completed with an overall GPA of 2.0</dd></div>
+        </dl>
+      </article>
+
+      <!-- Projects -->
+      <div class="mt-16 grid md:grid-cols-2 gap-6">
+        <article class="interest rounded-md bg-white p-8 sm:p-10">
+          <p class="label text-dim">Project · Netze BW · 2025 – 2026</p>
+          <h3 class="font-display uppercase text-4xl leading-none mt-4">Multi-agent RAG assistant</h3>
+          <p class="mt-5 text-dim leading-relaxed max-w-[48ch]">
+            An assistant for enterprise architects built on Azure AI Foundry. Several specialised agents split up a question,
+            retrieve the relevant internal documentation and combine it into one grounded answer.
+          </p>
+          <p class="mt-5 label text-dim">Azure AI Foundry · RAG · MCP · Multi-agent</p>
+        </article>
+        <a href="#vietcoff" data-hover class="interest group block rounded-md bg-white p-8 sm:p-10">
+          <p class="label text-dim">Project · Own company · Since Dec 2025</p>
+          <h3 class="font-display uppercase text-4xl leading-none mt-4 group-hover:text-volt transition-colors">VietCoff web shop ↑</h3>
+          <p class="mt-5 text-dim leading-relaxed max-w-[48ch]">
+            A headless, multilingual e-commerce shop: Next.js frontend on top of the WooCommerce Store API, 9 languages,
+            Amazon fulfillment and structured data for search.
+          </p>
+          <p class="mt-5 label text-dim">Next.js · WooCommerce · next-intl</p>
+        </a>
+      </div>
+
+      <!-- Research interests -->
+      <div class="mt-24 flex items-end justify-between gap-6 flex-wrap">
+        <h3 class="font-display uppercase text-5xl sm:text-6xl leading-none">What I want<br />to explore next</h3>
+        <p class="label text-dim">Research interests for my Master at CGU</p>
+      </div>
+      <div class="mt-10 grid md:grid-cols-2 gap-6">
+        <article class="interest bg-ink text-bone rounded-md p-8 sm:p-10 min-h-[22rem] flex flex-col justify-between">
+          <p class="label opacity-60">Interest 01</p>
+          <div>
+            <h3 class="font-display uppercase text-5xl leading-none">LLMs &amp;<br />AI agents</h3>
+            <p class="mt-5 opacity-75 leading-relaxed max-w-[44ch]">
+              At Netze BW I built a system where several agents work together and ground their answers in company documents.
+              I want to understand how to make agents more reliable: better retrieval, evaluation, and knowing when not to answer.
+            </p>
+          </div>
+        </article>
+        <article class="interest bg-white rounded-md p-8 sm:p-10 min-h-[22rem] flex flex-col justify-between">
+          <p class="label text-dim">Interest 02</p>
+          <div>
+            <h3 class="font-display uppercase text-5xl leading-none">Medical &amp;<br />health AI</h3>
+            <p class="mt-5 text-dim leading-relaxed max-w-[44ch]">
+              Chang Gung University is closely connected to the Chang Gung Memorial Hospital network, which makes it a great place
+              to learn how AI can support clinicians. I'm curious where language models can help in healthcare, and where they must not.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- BEYOND -->
+    <section class="wrap pb-28 sm:pb-36">
+      <div class="grid md:grid-cols-3 gap-10 border-t border-ink pt-10">
+        <div>
+          <p class="label text-dim">Languages</p>
+          <dl class="mt-5 grid gap-3 text-lg">
+            <div class="flex justify-between border-b border-ink/15 pb-2"><dt>German</dt><dd class="text-dim">native</dd></div>
+            <div class="flex justify-between border-b border-ink/15 pb-2"><dt>English</dt><dd class="text-dim">fluent</dd></div>
+            <div class="flex justify-between border-b border-ink/15 pb-2"><dt>Spanish</dt><dd class="text-dim">B1</dd></div>
+            <div class="flex justify-between border-b border-ink/15 pb-2"><dt class="font-tc">中文 (繁體)</dt><dd class="text-volt font-semibold">learning</dd></div>
+          </dl>
+        </div>
+        <div>
+          <p class="label text-dim">Toolbox</p>
+          <p class="mt-5 text-lg leading-relaxed">
+            Azure AI Foundry · RAG · MCP · Multi-agent systems · Swift · Angular · Next.js · React · TypeScript · Tailwind CSS · Power BI · Power Automate · Azure DevOps · Git
+          </p>
+        </div>
+        <div>
+          <p class="label text-dim">Outside of work</p>
+          <ul class="mt-5 grid gap-3 text-lg">
+            <li>Game development</li>
+            <li>International Incoming Program at DHBW, helping exchange students settle in</li>
+            <li>Vietnamese coffee, obviously</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="bg-ink text-bone pt-28 sm:pt-36 pb-10">
+      <div class="wrap">
+        <p class="label opacity-60">Contact &amp; links · Classmates, professors, anyone</p>
+        <h2 class="font-display uppercase leading-[0.85] text-[min(20vw,13rem)] mt-6">
+          Say <span class="font-tc font-black text-lilac">你好</span>
+        </h2>
+        <a href="mailto:hallbaur.jona03@gmail.com" data-hover class="mt-10 inline-block text-2xl sm:text-4xl font-semibold border-b-2 border-bone/40 pb-1 hover:border-lilac hover:text-lilac transition-colors break-all">hallbaur.jona03@gmail.com</a>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a href="https://www.linkedin.com/in/jona-hallbaur-a78345250/" target="_blank" rel="noopener" data-hover class="rounded-full border border-bone/30 px-6 py-3 hover:bg-bone hover:text-ink transition-colors">LinkedIn ↗</a>
+          <a href="https://vietcoff.com" target="_blank" rel="noopener" data-hover class="rounded-full border border-bone/30 px-6 py-3 hover:bg-bone hover:text-ink transition-colors">VietCoff ↗</a>
+        </div>
+        <footer class="mt-28 pt-6 border-t border-bone/15 flex justify-between gap-4 label opacity-50">
+          <span>© <span id="year"></span> Jona Hallbaur</span>
+          <span>Taoyuan · Karlsruhe</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Taoyuan clock
+    const tf = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Taipei' });
+    const clock = () => (document.getElementById('clock').textContent = tf.format(new Date()));
+    clock(); setInterval(clock, 15000);
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+    // Cursor + work hover image
+    const cursor = document.getElementById('cursor');
+    const peek = document.getElementById('peek');
+    const peekImg = document.getElementById('peek-img');
+    addEventListener('mousemove', (e) => {
+      cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      peek.style.left = e.clientX + 'px';
+      peek.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('[data-hover]').forEach((el) => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+    });
+    document.querySelectorAll('.work-row').forEach((row) => {
+      row.addEventListener('mouseenter', () => {
+        peekImg.src = row.dataset.img;
+        peek.classList.toggle('logo', row.hasAttribute('data-logo'));
+        peek.classList.add('on');
+      });
+      row.addEventListener('mouseleave', () => peek.classList.remove('on'));
+    });
+
+    // Split statement into words
+    const st = document.getElementById('statement');
+    st.innerHTML = st.textContent.trim().split(/\s+/).map((w) => `<span class="word">${w}</span>`).join(' ');
+
+    const loader = document.getElementById('loader');
+
+    if (!hasGsap || reduce) {
+      loader.remove();
+      document.getElementById('tl-fill').style.transform = 'scaleY(1)';
+    } else {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Smooth scroll
+      if (typeof Lenis !== 'undefined') {
+        const lenis = new Lenis({ lerp: 0.12 });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((t) => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+        document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
+          e.preventDefault(); lenis.scrollTo(a.getAttribute('href'));
+        }));
+      }
+
+      // Loader → hero reveal
+      const n = { v: 0 };
+      const num = document.getElementById('loader-num');
+      gsap.timeline()
+        .to(n, { v: 100, duration: 1.1, ease: 'power2.inOut', onUpdate: () => (num.textContent = Math.round(n.v)) })
+        .to(loader, { yPercent: -100, duration: 0.9, ease: 'power4.inOut' })
+        .from('.hero-word', { yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.12 }, '-=0.45')
+        .from('.hero-meta', { opacity: 0, y: 16, duration: 0.8, stagger: 0.06 }, '-=0.7')
+        .fromTo('.hero-photo', { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power4.inOut' }, '-=0.9')
+        .add(() => loader.remove());
+
+
+      // Statement lights up word by word
+      gsap.fromTo('#statement .word', { opacity: 0.15 }, {
+        opacity: 1, stagger: 0.1, ease: 'none',
+        scrollTrigger: { trigger: '#statement', start: 'top 80%', end: 'bottom 50%', scrub: true },
+      });
+
+      // Count-up numbers
+      document.querySelectorAll('.count').forEach((el) => {
+        const to = parseFloat(el.dataset.to), dec = +(el.dataset.dec || 0), o = { v: 0 };
+        gsap.to(o, { v: to, duration: 1.6, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          onStart: () => (el.textContent = (0).toFixed(dec)),
+          onUpdate: () => (el.textContent = o.v.toFixed(dec)) });
+      });
+
+      // Timeline: line fills as you scroll, stops fade in normally (no pinning)
+      gsap.to('#tl-fill', { scaleY: 1, ease: 'none',
+        scrollTrigger: { trigger: '#journey ol', start: 'top 60%', end: 'bottom 60%', scrub: true } });
+      gsap.utils.toArray('.stop').forEach((s) => {
+        gsap.from(s.querySelectorAll(':scope > p, :scope > div'), {
+          opacity: 0, y: 30, duration: 0.8, ease: 'power3.out', stagger: 0.08,
+          scrollTrigger: { trigger: s, start: 'top 80%' } });
+        const img = s.querySelector('.img-box img');
+        if (img) gsap.from(img, { scale: 1.15, duration: 1.4, ease: 'power3.out', scrollTrigger: { trigger: s, start: 'top 80%' } });
+      });
+
+      // Section reveals
+      gsap.utils.toArray('.work-row, .interest').forEach((el) => {
+        gsap.from(el, { opacity: 0, y: 40, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
+      });
+
+      addEventListener('load', () => ScrollTrigger.refresh());
+    }
+  </script>
+</body>
+</html>
